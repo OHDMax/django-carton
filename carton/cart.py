@@ -146,7 +146,7 @@ class Cart(object):
         """
         Removes all items.
         """
-        self._items_dict = {}
+        self._items_dict = defaultdict(dict)
         self.update_session()
 
     def set_quantity(self, product, quantity):
