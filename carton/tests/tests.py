@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 
 from carton.cart import Cart
-from carton.tests.models import Product
+from carton.tests.models import Product, Ticket
 from carton.tests.views import show
 
 try:
@@ -26,8 +26,21 @@ class CartTests(TestCase):
 
         self.cart = Cart(self.session)
 
-        self.deer = Product.objects.create(name='deer', price=10.0, custom_id=1)
-        self.moose = Product.objects.create(name='moose', price=20.0, custom_id=2)
+        self.deer = Product.objects.create(
+            name='deer',
+            price=10.0,
+            custom_id=1,
+        )
+        self.moose = Product.objects.create(
+            name='moose',
+            price=20.0,
+            custom_id=2,
+        )
+        self.ticket = Ticket.objects.create(
+            name='Clint Mansell',
+            price=25.0,
+            custom_id=6,
+        )
 
     def show_response(self):
         """
@@ -174,3 +187,26 @@ class CartTests(TestCase):
 
         self.assertNotContains(response, 'EXCLUDE')
         self.assertContains(response, 'deer')
+
+    def test_get_model_product_path(self):
+        """
+        Is a string with the full, correct import path returned for a
+        model?
+        """
+        self.assertEqual(
+            self.cart.get_product_model_path(self.deer),
+            'carton.tests.models.Product',
+        )
+
+    def test_different_product_models(self):
+        """
+        Does the cart work with different models?
+        """
+        self.cart.add(self.deer, 10.00, 1)
+        self.cart.add(self.ticket, 25.00, 1)
+        self.session.save()
+
+        response = self.show_response()
+
+        self.assertContains(response, '1 deer for $10.0')
+        self.assertContains(response, '1 Clint Mansell for $25.0')

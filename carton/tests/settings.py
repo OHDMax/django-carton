@@ -22,5 +22,3 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'carton.tests.urls'
 
 SECRET_KEY = 'any-key'
-
-CART_PRODUCT_MODEL = 'carton.tests.models.Product'
