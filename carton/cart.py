@@ -2,7 +2,7 @@ from collections import defaultdict
 from decimal import Decimal
 
 from django.conf import settings
-from django.utils.importlib import import_module
+from importlib import import_module
 
 from carton import settings as carton_settings
 
