@@ -110,11 +110,11 @@ class Cart(object):
             raise ValueError('Quantity must be at least 1 when adding to cart')
 
         if product in self.products:
-            self._items_dict[model][product.pk].quantity += quantity
+            self._items_dict[model][str(product.pk)].quantity += quantity
         else:
             if price is None:
                 raise ValueError('Missing price when adding to cart')
-            self._items_dict[model][product.pk] = CartItem(product, quantity, price)
+            self._items_dict[model][str(product.pk)] = CartItem(product, quantity, price)
 
         self.update_session()
 
@@ -125,7 +125,7 @@ class Cart(object):
         model = self.get_product_model_path(product)
 
         if product in self.products:
-            del self._items_dict[model][product.pk]
+            del self._items_dict[model][str(product.pk)]
             self.update_session()
 
     def remove_single(self, product):
@@ -135,11 +135,11 @@ class Cart(object):
         model = self.get_product_model_path(product)
 
         if product in self.products:
-            if self._items_dict[model][product.pk].quantity <= 1:
+            if self._items_dict[model][str(product.pk)].quantity <= 1:
                 # There's only 1 product left so we drop it
-                del self._items_dict[model][product.pk]
+                del self._items_dict[model][str(product.pk)]
             else:
-                self._items_dict[model][product.pk].quantity -= 1
+                self._items_dict[model][str(product.pk)].quantity -= 1
             self.update_session()
 
     def clear(self):
@@ -160,10 +160,10 @@ class Cart(object):
             raise ValueError('Quantity must be positive when updating cart')
 
         if product in self.products:
-            self._items_dict[model][product.pk].quantity = quantity
+            self._items_dict[model][str(product.pk)].quantity = quantity
 
-            if self._items_dict[model][product.pk].quantity < 1:
-                del self._items_dict[model][product.pk]
+            if self._items_dict[model][str(product.pk)].quantity < 1:
+                del self._items_dict[model][str(product.pk)]
 
             self.update_session()
 
